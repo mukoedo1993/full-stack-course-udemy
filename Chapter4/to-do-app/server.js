@@ -1,7 +1,19 @@
 let express = require('express')
+let mongodb = require('mongodb') //We will use this package to open a connection taht lives in our mongodb atlas account
 
 
 let app = express()
+
+let db
+
+let connectionString = 'mongodb+srv://mukoedo1993:WOAIblacktea1997@cluster0.cdyfn.mongodb.net/ToDoList?authSource=admin&replicaSet=atlas-mccbpg-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true'
+// replace the 'test' with 'ToDoList': So our target database will be ToDoList
+
+
+mongodb.connect(connectionString, {useNewUrlParser: true}, function(err, client){
+  db = client.db()
+  app.listen(3000)
+})
 
 app.use(express.urlencoded({extended: false}))
 
@@ -59,8 +71,14 @@ app.get('/',function(req, res) { //
 
 
 app.post('/create-item', function(req, res) {
-    console.log(req.body.item) // the real part of our item
-    res.send("Thanks for submitting the form.")
-})
 
-app.listen(3000)
+    //course 28th: 
+    db.collection('items').insertOne({text: req.body.item}, function() {
+      res.send("Thanks for submitting the form.")
+    }) //mongodb could have multiple collections. So, it choose the collection of items from db, and then insert the item with property: text, value: req.body.item.
+    // Then, send the feedback via res: Thanks for submitting the form.
+
+
+    console.log(req.body.item) // the real part of our item
+    
+})
