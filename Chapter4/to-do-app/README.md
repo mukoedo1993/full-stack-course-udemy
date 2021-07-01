@@ -9,7 +9,7 @@ nodemon server
  npm run watch# run locally while keep watching any change related to our code...
 ```
 
-
+On our local config file, i.e., package.json here, we need to modify:
 ```
 #package.json:
 ...
