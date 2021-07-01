@@ -1,0 +1,15 @@
+Quick Note About MongoDB Warning in Command-Line
+Hello everyone,
+
+In the last few weeks MongoDB released a new version of their Node package. The following lesson works perfectly and is still up to date with the exception of an annoying "deprecated" warning message MongoDB will display in the command-line. To make the warning message stop and to have the code be 100% up-to-date simply find this area in our code during the next lesson (this code will appear a bit after the halfway point of the video):
+
+{useNewUrlParser: true}
+
+and instead change it to this:
+
+{useNewUrlParser: true, useUnifiedTopology: true}
+
+I will work on re-filming this detail in the video so this text article is not needed, but in the meantime this tip should save you from the annoying warning message from MongoDB.
+
+Thanks!
+Brad
