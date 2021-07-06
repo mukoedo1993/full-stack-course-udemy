@@ -36,11 +36,11 @@ Google axios.js
 ```
 promise.then().catch() //inside the then you could enter a function that has no chance to run until the action has a chance to complete. If there is something wrong with then, the catch inside catch will be run.
 
-```
-
-<br>
 An HTML5 feature that lets us embed data right in our HTML
 <button data-blahblahblah="">
+
+```
+
 
 Lesson Overview:
 
