@@ -40,9 +40,7 @@ promise.then().catch() //inside the then you could enter a function that has no 
 
 <br>
 An HTML5 feature that lets us embed data right in our HTML
-`
-<button data-blahblahblah="">
-`
+`<button data-blahblahblah="">`
 
 Lesson Overview:
 
