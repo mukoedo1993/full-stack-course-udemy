@@ -8,6 +8,12 @@ let app = express()
 
 let db
 
+app.use(express.static('public')) //course 32nd: server static existing file. Make the content of folder available for the root of our server.
+
+
+
+
+
 let connectionString = require('./passcode.js') // I add passcode.js to the gitignore, so my passcode will NOT BE VISIBLE to the public. It is much safer. :)
 
 // replace the 'test' with 'ToDoList': So our target database will be ToDoList
@@ -18,7 +24,11 @@ mongodb.connect(connectionString, {useNewUrlParser: true}, function(err, client)
   app.listen(3000)
 })
 
+
+app.use(express.json())//for asynchronicous request:
 app.use(express.urlencoded({extended: false}))
+
+
 
 app.get('/',function(req, res) { //
 
@@ -26,6 +36,8 @@ app.get('/',function(req, res) { //
       res.send(`<!DOCTYPE html>
       <html>
       <head>
+      <script src="/browser.js"></script> <!--course 32rd-->
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Simple To-Do App!!!!</title>
@@ -49,7 +61,8 @@ app.get('/',function(req, res) { //
             return  `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
             <span class="item-text">${item.text}</span> <!--item._id or item.text-->
             <div>
-              <button class="edit-me btn btn-secondary btn-sm mr-1">Edit</button>
+              <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit!</button>
+              <!--The unique id that mongodb generates for us is underscore id.-->
               <button class="delete-me btn btn-danger btn-sm">Delete</button>
             </div>
           </li>`
@@ -59,7 +72,7 @@ app.get('/',function(req, res) { //
           </ul>
           
         </div>
-        
+      
       </body>
       </html>`)
       
@@ -84,4 +97,16 @@ app.post('/create-item', function(req, res) {
 
     console.log(req.body.item) // the real part of our item
     
+})
+
+
+app.post('/update-item', function(req, res){
+
+  db.collection('items').findOneAndUpdate({_id: new mongodb.ObjectId(req.body.id)}
+    ,{$set: {
+    text:req.body.text       //What you really wants to update 
+
+  }},function(){
+    res.send("Success!")
+  } ) //find one document in your collection and allow you to update.
 })
