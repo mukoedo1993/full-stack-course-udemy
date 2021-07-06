@@ -27,7 +27,7 @@ But now, we want to wait to read data from database, and after the database have
 the data, before we then actually send back the response.
 
 
-# course 32ND#
+# course 32ND #
 It is expected that once a user just simply submitted a form, there shouldn't be too much reload, refresh or anything
 else. Allow our server to send to our server on the fly without reloading a new URL.
 
@@ -40,7 +40,7 @@ promise.then().catch() //inside the then you could enter a function that has no 
 
 <br>
 An HTML5 feature that lets us embed data right in our HTML
-`<button data-blahblahblah="">`
+<button data-blahblahblah="">
 
 Lesson Overview:
 
