@@ -63,7 +63,7 @@ app.get('/',function(req, res) { //
             <div>
               <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit!</button>
               <!--The unique id that mongodb generates for us is underscore id.-->
-              <button class="delete-me btn btn-danger btn-sm">Delete</button>
+              <button  data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Delete</button>
             </div>
           </li>`
           }).join('')} <!--All JS arrays has access to a method map...-->
@@ -109,4 +109,11 @@ app.post('/update-item', function(req, res){
   }},function(){
     res.send("Success!")
   } ) //find one document in your collection and allow you to update.
+})
+
+
+app.post('/delete-item', function(req, res) {
+  db.collection('items').deleteOne({_id: new mongodb.ObjectId(req.body.id)}, function(){ // first argument: which document we want to delete; second argument:
+    res.send("success")
+  })
 })
