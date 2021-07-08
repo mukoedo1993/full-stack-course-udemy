@@ -1,3 +1,43 @@
+function itemTemplate(item) {
+    return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+    <span class="item-text">${item.text}</span> <!--item._id or item.text-->
+    <div>
+      <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit!</button>
+      <!--The unique id that mongodb generates for us is underscore id.-->
+      <button  data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Delete</button>
+    </div>
+  </li>`
+}
+
+// Create feature:
+let createField = document.getElementById('create-field')
+
+document.getElementById('create-form').addEventListener('submit' , function(e0){
+    // We want to prevent default behaviors. We don't want to send a traditional request to the server.
+   e0.preventDefault()
+   console.log(createField)
+   axios.post('/create-item', { text: createField.value}).then(function (response) { //Here, response is the server's response back to the browser.
+
+   //create the HTML for a new item
+   document.getElementById("item-list").insertAdjacentHTML("beforeend" , itemTemplate(response.data)) //It will access the JS object represents the newest data in database that
+   //the server sending back to our browser.
+    createField.value = "" //So, users don't need to manually clear the input textbox.
+    createField.focus() //keep focus
+
+
+
+
+   //We also want to update the item on the fly:
+
+ }).catch(function() {
+     console.log("Please try again later.")
+ })
+})
+
+
+
+
+
 document.addEventListener('click', function(e){
     //Delete feature
     if (e.target.classList.contains("delete-me")){

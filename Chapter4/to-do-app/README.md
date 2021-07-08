@@ -36,7 +36,7 @@ Google axios.js
 ```
 promise.then().catch() //inside the then you could enter a function that has no chance to run until the action has a chance to complete. If there is something wrong with then, the catch inside catch will be run.
 
-An HTML5 feature that lets us embed data right in our HTML
+//An HTML5 feature that lets us embed data right in our HTML:
 <button data-blahblahblah="">
 
 ```
@@ -49,5 +49,13 @@ Lesson Overview:
 
 
 
-# course 34TH# 
+# course 34TH # 
 Delete feature.
+
+
+# course 35TH #
+Create new item without page reloading.
+
+
+# course 36TH #
+Remove duplication of item HTML template so it's not awkwardly sitting in both our backend code and frontend code.

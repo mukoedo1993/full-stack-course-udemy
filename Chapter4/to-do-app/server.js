@@ -35,28 +35,35 @@ app.get('/',function(req, res) { //
     db.collection('items').find().toArray(function(err , items) { //find: mongodb way of read or reload data.
       res.send(`<!DOCTYPE html>
       <html>
+
       <head>
-      <script src="/browser.js"></script> <!--course 32rd-->
-      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Simple To-Do App!!!!</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
       </head>
+
+
+
       <body>
+
+    
         <div class="container">
           <h1 class="display-4 text-center py-1">To-Do App!!!!</h1>
           
           <div class="jumbotron p-3 shadow-sm">
-            <form action="/create-item" method="POST">     <!--It is the form that user actually typed into and send to.-->
+            <form id="create-form" action="/create-item" method="POST" class="caonima">     <!--It is the form that user actually typed into and send to.-->
               <div class="d-flex align-items-center">
-                <input name="item" autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;"> <!-- send the message via name  -->
+                <input id="create-field" name="item" autofocus autocomplete="off" class="form-control mr-3" type="text" style="flex: 1;"> <!-- send the message via name  -->
                 <button class="btn btn-primary">Add New Item</button>
               </div>
             </form>
           </div>
           
-          <ul class="list-group pb-5">
+      <script src="/browser.js"></script> <!--course 32rd--> <!--script element's location matters-->
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+          <ul id="item-list" class="list-group pb-5">
           ${items.map(function( item ){
             return  `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
             <span class="item-text">${item.text}</span> <!--item._id or item.text-->
@@ -72,8 +79,9 @@ app.get('/',function(req, res) { //
           </ul>
           
         </div>
-      
+     
       </body>
+
       </html>`)
       
     }) // mongodb is going to find all data in our collection.
@@ -87,15 +95,15 @@ app.get('/',function(req, res) { //
 app.post('/create-item', function(req, res) {
 
     //course 28th: 
-    db.collection('items').insertOne({text: req.body.item}, function() {
+    db.collection('items').insertOne({text: req.body.text}, function(err , info) { //the RHS text is the property we have set for the asynchronous request.
     
-      res.redirect('/') //redirect to the homepage
-
+      res.json(info.ops[0])//It represents the js object that we just created...
+      
     }) //mongodb could have multiple collections. So, it choose the collection of items from db, and then insert the item with property: text, value: req.body.item.
     // Then, send the feedback via res: Thanks for submitting the form.
 
-
-    console.log(req.body.item) // the real part of our item
+    console.log("line 104:")
+    console.log(req.body.text) // the real part of our item
     
 })
 
