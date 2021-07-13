@@ -64,3 +64,9 @@ Remove duplication of item HTML template so it's not awkwardly sitting in both o
 ```
 npm install sanitize-html #sanitize potential dangerous malicious HTML injection of data into your mongodb...
 ```
+
+
+# until 41st #
+It is incomplete until that...
+Please check the https://to-do-list-mongodb-testapp.herokuapp.com/ and private repo https://github.com/mukoedo1993/to-do-app-July-12th
+for more details.
