@@ -59,3 +59,8 @@ Create new item without page reloading.
 
 # course 36TH #
 Remove duplication of item HTML template so it's not awkwardly sitting in both our backend code and frontend code.
+
+# course 37TH #
+```
+npm install sanitize-html #sanitize potential dangerous malicious HTML injection of data into your mongodb...
+```

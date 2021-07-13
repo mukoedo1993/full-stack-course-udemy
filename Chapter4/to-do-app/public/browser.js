@@ -9,6 +9,19 @@ function itemTemplate(item) {
   </li>`
 }
 
+
+
+// Initial Page Load Render:
+// Locate the li with id "item-list"
+let ourHTML = items.map(function(item){
+    return itemTemplate(item)
+}).join('') //It is an array then joined into a big string of HTML text.
+// Instead of being separated by commas, now, nothing will separate these...
+
+
+document.getElementById('item-list').insertAdjacentHTML("beforeend", ourHTML)
+
+
 // Create feature:
 let createField = document.getElementById('create-field')
 

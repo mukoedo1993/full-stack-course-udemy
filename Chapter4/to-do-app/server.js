@@ -2,7 +2,7 @@
 
 let express = require('express')
 let mongodb = require('mongodb') //We will use this package to open a connection taht lives in our mongodb atlas account
-
+let sanitizeHTML = require('sanitize-html')
 
 let app = express()
 
@@ -19,7 +19,7 @@ let connectionString = require('./passcode.js') // I add passcode.js to the giti
 // replace the 'test' with 'ToDoList': So our target database will be ToDoList
 
 //
-mongodb.connect(connectionString, {useNewUrlParser: true}, function(err, client){
+mongodb.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client){
   db = client.db()
   app.listen(3000)
 })
@@ -30,7 +30,22 @@ app.use(express.urlencoded({extended: false}))
 
 
 
-app.get('/',function(req, res) { //
+function passwordProected(req, res, next) {
+ res.set('WWW-Authenticate' , 'Basic realm="Simple Todo App"')
+  //next() //It means that this function is done, you should move to the next function you included in the app.get(...) below.
+  console.log(req.headers.authorization)
+
+  if(req.headers.authorization == "Basic bGVhcm46amF2YXNjcmlwdA==") {
+    next()
+  } else {
+    res.status(401).send("Authentication required")
+  }
+}
+
+app.use(passwordProected) // add-on for all of our functions for all of our url
+
+
+app.get('/', function(req, res) { //
 
     db.collection('items').find().toArray(function(err , items) { //find: mongodb way of read or reload data.
       res.send(`<!DOCTYPE html>
@@ -38,10 +53,12 @@ app.get('/',function(req, res) { //
 
       <head>
 
-        <meta charset="UTF-8">
+      <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Simple To-Do App!!!!</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+
       </head>
 
 
@@ -60,25 +77,23 @@ app.get('/',function(req, res) { //
               </div>
             </form>
           </div>
-          
-      <script src="/browser.js"></script> <!--course 32rd--> <!--script element's location matters-->
-      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
           <ul id="item-list" class="list-group pb-5">
-          ${items.map(function( item ){
-            return  `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
-            <span class="item-text">${item.text}</span> <!--item._id or item.text-->
-            <div>
-              <button data-id="${item._id}" class="edit-me btn btn-secondary btn-sm mr-1">Edit!</button>
-              <!--The unique id that mongodb generates for us is underscore id.-->
-              <button  data-id="${item._id}" class="delete-me btn btn-danger btn-sm">Delete</button>
-            </div>
-          </li>`
-          }).join('')} <!--All JS arrays has access to a method map...-->
-          <!--join method will allow us to convert an array into a string of text. Its parameter is the separative icon.->
         
           </ul>
+
+        
           
         </div>
+
+
+        <script>
+        let items = ${JSON.stringify(items)}    <!--It is generated as a global variable.-->
+  
+        </script>
+    <script src="/browser.js"></script> <!--course 32rd--> </script><!--script element's location matters-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  
+        
      
       </body>
 
@@ -95,7 +110,11 @@ app.get('/',function(req, res) { //
 app.post('/create-item', function(req, res) {
 
     //course 28th: 
-    db.collection('items').insertOne({text: req.body.text}, function(err , info) { //the RHS text is the property we have set for the asynchronous request.
+  let safeText = sanitizeHTML(req.body.text , {allowedTags: [] , allowedAttributes: {}}) //We don't want any HTML tags or attributes...
+  // Now, whatever user entered will be given into safeText variable. And all the code will be cleaned-up text.
+
+    //course 37th: req.body.text might be malicious...
+    db.collection('items').insertOne({text: safeText}, function(err , info) { //the RHS text is the property we have set for the asynchronous request.
     
       res.json(info.ops[0])//It represents the js object that we just created...
       
@@ -110,9 +129,10 @@ app.post('/create-item', function(req, res) {
 
 app.post('/update-item', function(req, res){
 
+  let safeText = sanitizeHTML(req.body.text , {allowedTags: [] , allowedAttributes: {}})
   db.collection('items').findOneAndUpdate({_id: new mongodb.ObjectId(req.body.id)}
     ,{$set: {
-    text:req.body.text       //What you really wants to update 
+    text:safeText      //What you really wants to update 
 
   }},function(){
     res.send("Success!")
