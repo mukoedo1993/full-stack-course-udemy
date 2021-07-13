@@ -1,0 +1,1 @@
+This folder, views, will include all of our HTML templates, or, views.
