@@ -1,0 +1,5 @@
+Security Note
+In the following lessons while you are entering text into the password field in the registration form do not use a real password that you use for any of your real world accounts. Because our local development / testing copy of our application is running on HTTP instead of HTTPS if there was someone on your home network trying to spy on you they could determine your password. So while we are building and testing our application it's okay to use ridiculously simple and insecure passwords; just don't use a password you also use for any meaningful accounts.
+
+Thanks!
+Brad

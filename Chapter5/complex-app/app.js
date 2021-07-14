@@ -23,7 +23,6 @@ app.set('view engine', 'ejs') // It tells our app which template engine we are u
    
 //    res.render('home-guest') //We just give a name of the template...
 //})
-
 app.use('/', router) // It works in the same way as 3 lines of code before.
 
 
