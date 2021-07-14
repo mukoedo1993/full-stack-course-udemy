@@ -1,5 +1,6 @@
 //goal: export multiple functions that could be executed in multiple javascript files.
 
+const { reset } = require('nodemon')
 const User = require('../models/User') // reusable blueprint or ctor. functions.
 
 exports.login = function(){
@@ -17,7 +18,13 @@ exports.register = function(req , res){
     console.log(user) // FOR TEST ONLY
     user.register()
 
-    res.send("Thanks for trying to register.")
+
+    if (user.errors.length) {
+       res.send(user.errors)
+
+    } else {
+        res.send("Congrats! There are no errors...")
+    }
 }
 
 
