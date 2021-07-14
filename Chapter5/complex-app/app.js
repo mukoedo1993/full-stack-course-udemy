@@ -9,6 +9,13 @@ const router = require('./router')
 
 console.log(router)
 
+
+app.use(express.urlencoded({ extended: false}))
+//It tells the express to add user submitted data onto our requested object. So we can access it via our request.
+
+app.use(express.json())
+
+
 app.use(express.static('public'))//We want to make the folder, public, accessible, for anyone who wants to view our app...
 
 
