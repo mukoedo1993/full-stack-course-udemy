@@ -7,3 +7,6 @@ npm install ejs
 npm install nodemon
 ```
 
+```
+"watch": "nodemon app", 
+```
