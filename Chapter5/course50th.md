@@ -13,7 +13,7 @@ If this article wasn't clear; that's okay, I've created a CodePen example to dem
 
 https://codepen.io/learnwebcode/pen/zYKgpNp?editors=0010
 
-If you're still confused about the this keyword you can always go back and revisit the Scope & Context video lessons in the opening "10 Days of JavaScript" chapter of this course.
+If you're still confused about the `this` keyword you can always go back and revisit the Scope & Context video lessons in the opening "10 Days of JavaScript" chapter of this course.
 
 Enjoy!
 Brad
