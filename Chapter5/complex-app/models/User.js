@@ -6,6 +6,28 @@ let User = function(data){ //ctor.
    this.errors = []
 }
 
+User.prototype.cleanUp = function() {
+    if (typeof(this.data.username) != "string") {
+        this.data.username = ""
+    }
+
+    if (typeof(this.data.email) != "string") {
+        this.data.email = ""
+    }
+
+    if (typeof(this.data.password) != "string") {
+        this.data.password = ""
+    }
+
+    // get rid of any bogus properties
+    this.data = {
+        username: this.data.username.trim().toLowerCase(),  //trim method: get rid of any spaces at the beginning or ending of the values....
+        email: this.data.email.trim().toLowerCase(),
+        password: this.data.password
+        //So any other entered properties by clients will be ignored since here...
+    }
+ }
+
 User.prototype.validate = function() {
     if (this.data.username == "") {
         this.errors.push("You must provide a user name!")
@@ -39,6 +61,7 @@ User.prototype.validate = function() {
 
 User.prototype.register = function() {
     // Step #1: Validate user data:
+    this.cleanUp()
     this.validate()
 
 

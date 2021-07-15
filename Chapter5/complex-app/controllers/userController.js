@@ -15,9 +15,9 @@ exports.logout = function(){
 exports.register = function(req , res){
 
     let user = new User(req.body)
-    console.log(user) // FOR TEST ONLY
-    user.register()
 
+    user.register()
+    console.log(user) // FOR TEST ONLY
 
     if (user.errors.length) {
        res.send(user.errors)

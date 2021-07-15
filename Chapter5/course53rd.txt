@@ -1,0 +1,9 @@
+Quick Note About Connecting to Database
+If you skipped the "Simple ToDo" app in this course and jumped right to the "Starting Our Complex App" chapter then you will likely run into a problem when attempting to connect to your database in the next lesson. In particular, when you create your MongoDB Atlas account, you need to whitelist your IP address (actually all IP addresses since your address could change and also we don't know the address of our Heroku server). To review, we learned how to do this in Lecture #28 (titled Connecting Node App to Database) at about the 13 minute and 30 second marker.
+
+Also, if you skipped that chapter, here's another important reminder regarding the password of your dbUser that you include in your database connection string:
+
+Many of you have had trouble connecting your Node app to your database, and nearly all of those issues are related to your database connection string. When you chose the password for your Atlas dbUser is it possible you used a password generator tool that included special characters? That will cause your DB connection string to fail. You can use a password like that, but you need to make sure the password included in your connection string is url-encoded. You can use this tool to encode and decode the password portion of your connection string. Or, if that sounds too complicated, you can try giving your Atlas dbUser a new password that uses simple characters and numbers and then update your connection string accordingly.
+
+Thanks!
+Brad
