@@ -32,5 +32,4 @@ app.set('view engine', 'ejs') // It tells our app which template engine we are u
 //})
 app.use('/', router) // It works in the same way as 3 lines of code before.
 
-
-app.listen(3000)
+module.exports = app // instead of actually listening, we just export it from the file.

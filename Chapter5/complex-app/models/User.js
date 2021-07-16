@@ -1,3 +1,5 @@
+const userCollection = require('../db').collection("users") // within mongodb
+
 const validator = require("validator")
 
 let User = function(data){ //ctor.
@@ -66,6 +68,11 @@ User.prototype.register = function() {
 
 
     // Step #2: Only if there are no validation errors, then save the user data into database.
+    if(!this.errors.length ) {
+        console.log(this.data)
+        userCollection.insertOne(this.data) //because we have already cleaned up and validate that data.
+        
+    }
 }
 
 module.exports = User
