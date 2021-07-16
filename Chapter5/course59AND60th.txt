@@ -1,0 +1,9 @@
+Downside for traditional callbacks for several asynchronous functions:
+https://codepen.io/mukoedo1993/pen/YzVVwzx
+
+V.S:
+https://codepen.io/mukoedo1993/pen/zYwwrBq?editors=0010
+
+
+async await:
+https://codepen.io/mukoedo1993/pen/mdmmVMj
