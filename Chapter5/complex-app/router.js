@@ -16,4 +16,6 @@ router.get('/', userController.home)
 
 router.post('/register', userController.register)
 
+router.post('/login', userController.login)
+
 module.exports = router// whatever what we set this equal to will be return when we require it.
