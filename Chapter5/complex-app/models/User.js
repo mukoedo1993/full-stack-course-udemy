@@ -61,26 +61,36 @@ User.prototype.validate = function() {
     }
 }
 
-User.prototype.login = function(callback){
-    this.cleanUp()
 
-    // CRUD Operations <- esp., contextually, R here...
-    userCollection.findOne({username: this.data.username} , (err, attemptedUser) => {
-        if(attemptedUser && attemptedUser.password == this.data.password){ //If it exists, then we have actually found the user, otherwise, the user just doesn't exist...
-            //In this context, we need to make sure that this keyword will not comeback to bite us...
-            // Because there is not an object that directly calls this function, so this will be considered as a global object here...
-            //Arrow function: The benefits for arrow function are that it will not manipulate or change the this keyword. So, whatever, the keyword this is set outside the function,
-            // is what will still equal.
 
-          callback("Congrats!")
 
-        }else{
-            callback("Invalid username / password")
-        }
-    }) //first arguemnt: the pair of data to match, i.e., condition; second argument: a function once the matching of 1st arguemnt
-                                                               // has finished and completed,  because we don't know how long it will take...
-                            
+User.prototype.login = function(){
+          return new Promise((resolve, reject) => {
+            // We could make asynchronous operations here, i.e., operations that take some time to complete.
+            this.cleanUp()
+
+
+
+            // CRUD Operations <- esp., contextually, R here...
+            // Luckily, the mongodb is modern. We could not only use findOne method with callback approach, but this function with findOne will also return a promise.
+            userCollection.findOne({username: this.data.username}).then((attemptedUser) =>{
+                if(attemptedUser && attemptedUser.password == this.data.password) { //If it exists, then we have actually found the user, otherwise, the user just doesn't exist...
+                    //In this context, we need to make sure that this keyword will not comeback to bite us...
+                    // Because there is not an object that directly calls this function, so this will be considered as a global object here...
+                    //Arrow function: The benefits for arrow function are that it will not manipulate or change the this keyword. So, whatever, the keyword this is set outside the function,
+                    // is what will still equal.
+        
+                  resolve("Congrats!")
+                 
+                }else{
+                    reject("Invalid username / password")
+                }
+            }).catch( function() {
+                reject("Please try again later.") // server error we didn't account for.
+            }) 
+          })  
 }
+
 
 User.prototype.register = function() {
     // Step #1: Validate user data:
