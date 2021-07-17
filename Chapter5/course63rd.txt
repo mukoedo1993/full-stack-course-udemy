@@ -1,0 +1,8 @@
+For Those Who Are In a Hurry (Security Note)
+For those of you who plan on watching this entire course before creating real world public applications you can stop reading this article and continue to the next lesson. This note is only for people who are in a hurry to launch real world public apps before completing the final chapters of this course.
+
+Before you use cookies and sessions like this in a real world (public) project please be sure to implement CSRF protection. Don’t worry, I don’t expect you to know what “CSRF protection” means; we will learn about it and add it to this application later in the course, step by step together. I just didn't want to burden us with worries about security this early in the project.
+
+Again, if you plan on completing this course before launching an app publicly you have nothing to worry about. However, if you're in a hurry, please watch the "What is CSRF?" chapter towards the end of this course before launching an app to the public.
+
+Thanks, and happy coding!

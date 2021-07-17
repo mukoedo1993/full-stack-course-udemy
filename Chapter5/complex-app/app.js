@@ -1,6 +1,20 @@
 const express = require('express')
 
+const session = require('express-session')
+
 const app = express()
+
+
+//boilerplate code:
+let sessionOptions = session({
+    secret: "Javascript is sooooooo cooooooool",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {maxAge: 1000 * 60 *60 *24 , httpOnly: true} // 1 day cookie to expire
+
+})
+
+app.use(sessionOptions)
 
 
 const router = require('./router')
