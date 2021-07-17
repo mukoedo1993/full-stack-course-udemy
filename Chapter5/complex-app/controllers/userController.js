@@ -23,7 +23,16 @@ will have actually been updated in time before the redirect runs.
 
 
     }).catch(function(e){
-        res.send(e)
+
+        req.flash('errors', e) //first argument: the name of collection or an array of messages we want to start building or adding on to;
+        //second argument: the actual message you want to add on to the set of messages. Here, we set this as the value that our promise are going to use to reject with.
+        //It is not guaranteed that flash function will complete before the redirect function.
+
+        // Commented out in course 66th
+       // res.redirect('/') // It is going to be treated as a new separated request. Since we are redirecting to the homepage, our router is going to call our home function.
+       req.session.save( function(){
+           res.redirect('/')
+       })
     }) 
 
 }
@@ -54,13 +63,14 @@ exports.register = function(req , res){
     }
 }
 
-
+// 
 exports.home = function(req, res){
     if (req.session.user) {
         res.render('home-dashboard', {username: req.session.user.username}) // we want to pass the second argument as JS object to the first argument.
 
     } else {
-        res.render('home-guest')//
+        res.render('home-guest', {errors: req.flash('errors')})//HTTP request is stateless, it has no memory that we login just failed.
+        //We want to only show the error message to the user once. Once we have shown the user the data, we want to delete it. (course 66th)
     }
 } 
 

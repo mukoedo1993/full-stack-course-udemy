@@ -50,3 +50,9 @@ course 64th:
 ```
 npm install connect-mongo
 ```
+
+
+course 66th:
+```
+npm install connect-flash
+```

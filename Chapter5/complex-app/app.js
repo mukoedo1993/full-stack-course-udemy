@@ -4,6 +4,8 @@ const session = require('express-session')
 
 const MongoStore = require('connect-mongo')(session)
 
+const flash = require('connect-flash')
+
 const app = express()
 
 
@@ -19,6 +21,7 @@ let sessionOptions = session({
 })
 
 app.use(sessionOptions)
+app.use(flash()) //add the flash feature to our application: course 66th
 
 
 const router = require('./router')
