@@ -33,3 +33,9 @@ npm install dotenv # ubuntu terminal
 
 course 58th:
 https://codepen.io/anon/pen/wbOzrp?editors=0010
+
+
+course 61st:
+```
+npm install bcryptjs
+```

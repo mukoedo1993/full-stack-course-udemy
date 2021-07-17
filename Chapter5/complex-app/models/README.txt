@@ -2,7 +2,7 @@ tips for email address:
 npm install validator
 
 
-backup for traditional callback function for asynchronous situations:
+backup DEPRECATED for traditional callback function for asynchronous situations:
 ```
 //User.js
 User.prototype.login = function(callback){

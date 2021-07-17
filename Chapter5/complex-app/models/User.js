@@ -1,3 +1,5 @@
+const bcrypt = require("bcryptjs")
+
 const userCollection = require('../db').collection("users") // within mongodb; it's the object that represents our database collection
 
 const validator = require("validator")
@@ -49,8 +51,8 @@ User.prototype.validate = function() {
     if (this.data.password.length > 0 && this.data.password.length < 12) {
         this.errors.push("Password must be at least 12 chars")
     }
-    if (this.data.password.length > 100 ) {
-        this.errors.push("Password cannot exceed 100 chars")
+    if (this.data.password.length > 50 ) {
+        this.errors.push("Password cannot exceed 50 chars")
     }
 
     if (this.data.username.length > 0 && this.data.username.length < 3) {
@@ -74,11 +76,12 @@ User.prototype.login = function(){
             // CRUD Operations <- esp., contextually, R here...
             // Luckily, the mongodb is modern. We could not only use findOne method with callback approach, but this function with findOne will also return a promise.
             userCollection.findOne({username: this.data.username}).then((attemptedUser) =>{
-                if(attemptedUser && attemptedUser.password == this.data.password) { //If it exists, then we have actually found the user, otherwise, the user just doesn't exist...
+                if(attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) { //If it exists, then we have actually found the user, otherwise, the user just doesn't exist...
                     //In this context, we need to make sure that this keyword will not comeback to bite us...
                     // Because there is not an object that directly calls this function, so this will be considered as a global object here...
                     //Arrow function: The benefits for arrow function are that it will not manipulate or change the this keyword. So, whatever, the keyword this is set outside the function,
                     // is what will still equal.
+                    //Update on course 61st: we will compare unhashed attempted users' password(RHS) with the injected users' password(LHS) in our database.
         
                   resolve("Congrats!")
                  
@@ -100,6 +103,13 @@ User.prototype.register = function() {
 
     // Step #2: Only if there are no validation errors, then save the user data into database.
     if(!this.errors.length ) {
+
+        // hash user passwords
+        let salt = bcrypt.genSaltSync(10)
+
+        this.data.password = bcrypt.hashSync(this.data.password ,salt) //first value is tha password you want to encrypt, the second value is the salt value.
+
+
         console.log(this.data)
         userCollection.insertOne(this.data) //because we have already cleaned up and validate that data.
         
