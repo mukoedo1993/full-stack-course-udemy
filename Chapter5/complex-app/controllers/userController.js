@@ -38,7 +38,7 @@ exports.register = function(req , res){
 
 exports.home = function(req, res){
     if (req.session.user) {
-        res.send("Welcome to the actual application!") // 
+        res.render('home-dashboard', {username: req.session.user.username}) // we want to pass the second argument as JS object to the first argument.
 
     } else {
         res.render('home-guest')//

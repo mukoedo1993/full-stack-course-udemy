@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs")
 
-const userCollection = require('../db').collection("users") // within mongodb; it's the object that represents our database collection
+const userCollection = require('../db').db().collection("users") // within mongodb; it's the object that represents our database collection
+//require('../db') exports our client, and db() will call the database.
 
 const validator = require("validator")
 

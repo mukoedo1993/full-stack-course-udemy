@@ -45,3 +45,8 @@ course 62nd:
 ```
 npm install express-session
 ```
+
+course 64th:
+```
+npm install connect-mongo
+```
