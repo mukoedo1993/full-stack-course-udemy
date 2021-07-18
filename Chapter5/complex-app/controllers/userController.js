@@ -3,6 +3,18 @@
 const { reset } = require('nodemon')
 const User = require('../models/User') // reusable blueprint or ctor. functions.
 
+exports.mustBeLoggedIn = function(req, res, next) {
+ if(req.session.user) {
+    next() //The user exists, so we could call the next function.
+ } else {
+    req.flash("errors", "You must be logged in to perform that action")
+    req.session.save(function(){
+        res.redirect('/')
+    })
+ }
+}
+
+
 exports.login = function(req, res){ 
     let user = new User(req.body)
     user.login().then(function(result){
@@ -92,7 +104,7 @@ exports.home = function(req, res){
     if (req.session.user) {
         res.render('home-dashboard', {username: req.session.user.username,
                                       avatar: req.session.user.avatar
-                                      
+
         }) // we want to pass the second argument as JS object to the first argument.
 
     } else {
