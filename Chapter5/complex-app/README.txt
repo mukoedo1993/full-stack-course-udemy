@@ -56,3 +56,11 @@ course 66th:
 ```
 npm install connect-flash
 ```
+
+course 69th:
+```
+npm install md5
+```
+
+en.gravatar.com in course 69th...
+

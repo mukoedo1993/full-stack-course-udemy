@@ -5,6 +5,8 @@ const userCollection = require('../db').db().collection("users") // within mongo
 
 const validator = require("validator")
 
+const md5 = require('md5')
+
 let User = function(data){ //ctor.
    this.data = data // store the user's input in this object.
    
@@ -113,7 +115,8 @@ User.prototype.login = function(){
                     //Arrow function: The benefits for arrow function are that it will not manipulate or change the this keyword. So, whatever, the keyword this is set outside the function,
                     // is what will still equal.
                     //Update on course 61st: we will compare unhashed attempted users' password(RHS) with the injected users' password(LHS) in our database.
-        
+                  this.data = attemptedUser
+                    this.getAvatar()
                   resolve("Congrats!")
                  
                 }else{
@@ -146,6 +149,9 @@ User.prototype.register = function(){
             await userCollection.insertOne(this.data) //because we have already cleaned up and validate that data.
             //we need to make sure this operation will compelte before resolve is called...
 
+            this.getAvatar() // include this after database action. We don't want to save avatar url in the database permanently.
+            // Counterarguemnt: What if gravatar change the url structures? At that point, we would have to go to every user account in my database and update avatar database field.
+            // ... It's more meaningful for we to generate it on the fly when we need it, in the memory.
 
             resolve()
         } else {
@@ -154,4 +160,8 @@ User.prototype.register = function(){
     })
 }
 
+User.prototype.getAvatar = function(){
+
+    this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`
+}
 module.exports = User

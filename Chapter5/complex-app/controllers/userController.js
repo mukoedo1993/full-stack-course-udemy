@@ -7,7 +7,10 @@ exports.login = function(req, res){
     let user = new User(req.body)
     user.login().then(function(result){
         
-        req.session.user = {favColor: "blue", username: user.data.username}
+        req.session.user = {avatar: user.avatar, //in the memory, we know it will be avatar in our object. We save it in a session, so if our user login, we not need to type in
+            //the avatar again.
+
+             username: user.data.username}
         //res.send(result) // Here, we want to let users to login. In other words, we want to leverage session here.
 
 
@@ -53,7 +56,9 @@ exports.register = function(req , res){
     let user = new User(req.body)
 
     user.register().then(() => {
-        req.session.user = {username: user.data.username}
+        req.session.user = {username: user.data.username,
+        avatar: user.avatar // course 69th
+    }
         // After we update the session data:
         req.session.save(function() {
             res.redirect('/')
@@ -85,7 +90,10 @@ exports.register = function(req , res){
 // 
 exports.home = function(req, res){
     if (req.session.user) {
-        res.render('home-dashboard', {username: req.session.user.username}) // we want to pass the second argument as JS object to the first argument.
+        res.render('home-dashboard', {username: req.session.user.username,
+                                      avatar: req.session.user.avatar
+                                      
+        }) // we want to pass the second argument as JS object to the first argument.
 
     } else {
         res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')})//HTTP request is stateless, it has no memory that we login just failed.
