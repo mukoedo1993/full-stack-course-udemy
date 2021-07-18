@@ -52,15 +52,34 @@ exports.register = function(req , res){
 
     let user = new User(req.body)
 
-    user.register()
+    user.register().then(() => {
+        req.session.user = {username: user.data.username}
+        // After we update the session data:
+        req.session.save(function() {
+            res.redirect('/')
+        })
+
+        //regErrors as parameters: our controller doesn't have to be aware of our data structure. It's only
+        //calling the promise and letting the model deal with all of the data and the varible names, so on and so forth.
+    }).catch((regErrors) => {
+        regErrors.forEach(function(error){
+            req.flash('regErrors', error) // This step will trigger a request on database.
+        })
+        req.session.save(function() {
+            res.redirect('/')
+        })
+        // We don't actually want to redirect until our database actions has completed.
+        // So, let's manually tell our database to save.
+
+
+    })
+     // It is an asynchronous function, and we can wait our return our promise. We want to adjust our register function so that it can return a promise.
+                    //...and we can wait for our promise, here in our controller....
+
+
     console.log(user) // FOR TEST ONLY
 
-    if (user.errors.length) {
-       res.send(user.errors)
-
-    } else {
-        res.send("Congrats! There are no errors...")
-    }
+ 
 }
 
 // 
@@ -69,7 +88,7 @@ exports.home = function(req, res){
         res.render('home-dashboard', {username: req.session.user.username}) // we want to pass the second argument as JS object to the first argument.
 
     } else {
-        res.render('home-guest', {errors: req.flash('errors')})//HTTP request is stateless, it has no memory that we login just failed.
+        res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')})//HTTP request is stateless, it has no memory that we login just failed.
         //We want to only show the error message to the user once. Once we have shown the user the data, we want to delete it. (course 66th)
     }
 } 

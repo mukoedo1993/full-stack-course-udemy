@@ -34,36 +34,66 @@ User.prototype.cleanUp = function() {
  }
 
 User.prototype.validate = function() {
-    if (this.data.username == "") {
-        this.errors.push("You must provide a user name!")
-    }
+    return new Promise(async (resolve, reject) => { //turn the function into an async function
+        if (this.data.username == "") {
+            this.errors.push("You must provide a user name!")
+        }
+    
+        if (!validator.isEmail(this.data.email)) {
+            this.errors.push("You must provide a valid email address!")
+        }
+    
+        if(this.data.username != "" && !(validator.isAlphanumeric(this.data.username))) {
+            this.errors.push("Usernames can only contain letters and numbers.")}
+    
+        if (this.data.password == "") {
+            this.errors.push("You must provide a password!")
 
-    if (!validator.isEmail(this.data.email)) {
-        this.errors.push("You must provide a valid email address!")
-    }
+        }
+    
+        if (this.data.password.length > 0 && this.data.password.length < 12) {
+            this.errors.push("Password must be at least 12 chars")
+        }
+        if (this.data.password.length > 50 ) {
+            this.errors.push("Password cannot exceed 50 chars")
+        }
+    
+        if (this.data.username.length > 0 && this.data.username.length < 3) {
+            console.log("hehe")
+            this.errors.push("Username must be at least 3 chars")
+        }
+        if (this.data.username.length > 30 ) {
+            this.errors.push("Username cannot exceed 30 chars")
+        }
+    
+        // Only if username is valid then check to see if it's already taken. 
+        // The point is that itr's meaningless to waste energy to trigger database if it is not even a valid username.
+        if (this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)) {
+            let usernameExists = await userCollection.findOne({username: this.data.username}) // If mongodb does find a matching document, that's what this promise will resolve to.
+            // await keyword: the Javascript will freeze for the operations until this operation actually resolves this projects.
+            console.log("hehe")
+    
+            if(usernameExists) {
+                this.errors.push("That username is already taken.")
+            }
+        }
+    
+        // // Only if email is valid then check to see if it's already taken. 
+        if (validator.isEmail(this.data.email)) {
+            let emailExists = await userCollection.findOne({email: this.data.email}) // If mongodb does find a matching document, that's what this promise will resolve to.
+            // await keyword: the Javascript will freeze for the operations until this operation actually resolves this projects.
+            
+    
+            if(emailExists) {
+                this.errors.push("That email is already being used.")
+            }
 
-    if(this.data.username != "" && !(validator.isAlphanumeric(this.data.username))) {
-        this.errors.push("Usernames can only contain letters and numbers.")}
-
-    if (this.data.password == "") {
-        this.errors.push("You must provide a password!")
+           
+        }
+        resolve() // to signify this operation of promise has actually completed.
     }
-
-    if (this.data.password.length > 0 && this.data.password.length < 12) {
-        this.errors.push("Password must be at least 12 chars")
-    }
-    if (this.data.password.length > 50 ) {
-        this.errors.push("Password cannot exceed 50 chars")
-    }
-
-    if (this.data.username.length > 0 && this.data.username.length < 3) {
-        this.errors.push("Username must be at least 3 chars")
-    }
-    if (this.data.username.length > 30 ) {
-        this.errors.push("Username cannot exceed 30 chars")
-    }
+    )
 }
-
 
 
 
@@ -96,25 +126,32 @@ User.prototype.login = function(){
 }
 
 
-User.prototype.register = function() {
-    // Step #1: Validate user data:
-    this.cleanUp()
-    this.validate()
+User.prototype.register = function(){
+    return new Promise(async (resolve, reject) => {
+        // Step #1: Validate user data:
+        this.cleanUp()
+        await this.validate()
+    
+    
+        // Step #2: Only if there are no validation errors, then save the user data into database.
+        if(!this.errors.length ) {
+    
+            // hash user passwords
+            let salt = bcrypt.genSaltSync(10)
+    
+            this.data.password = bcrypt.hashSync(this.data.password ,salt) //first value is tha password you want to encrypt, the second value is the salt value.
+    
+    
+            console.log(this.data)
+            await userCollection.insertOne(this.data) //because we have already cleaned up and validate that data.
+            //we need to make sure this operation will compelte before resolve is called...
 
 
-    // Step #2: Only if there are no validation errors, then save the user data into database.
-    if(!this.errors.length ) {
-
-        // hash user passwords
-        let salt = bcrypt.genSaltSync(10)
-
-        this.data.password = bcrypt.hashSync(this.data.password ,salt) //first value is tha password you want to encrypt, the second value is the salt value.
-
-
-        console.log(this.data)
-        userCollection.insertOne(this.data) //because we have already cleaned up and validate that data.
-        
-    }
+            resolve()
+        } else {
+            reject(this.errors)
+        }
+    })
 }
 
 module.exports = User
