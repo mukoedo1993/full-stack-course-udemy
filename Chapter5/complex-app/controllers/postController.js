@@ -1,3 +1,5 @@
 exports.viewCreateScreen = function(req, res) {
-    res.render('create-post', {username: req.session.user.username, avatar: req.session.user.avatar})
+    res.render('create-post'
+  //  , {username: req.session.user.username, avatar: req.session.user.avatar} // commented in course 71st
+    )
 }

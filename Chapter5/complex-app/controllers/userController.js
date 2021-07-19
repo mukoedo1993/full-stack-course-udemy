@@ -102,13 +102,14 @@ exports.register = function(req , res){
 // 
 exports.home = function(req, res){
     if (req.session.user) {
-        res.render('home-dashboard', {username: req.session.user.username,
-                                      avatar: req.session.user.avatar
-
-        }) // we want to pass the second argument as JS object to the first argument.
+        res.render('home-dashboard'
+       //, {username: req.session.user.username, avatar: req.session.user.avatar}   // we have already passed it in app.js. Commented in course 71st
+                                      ) // we want to pass the second argument as JS object to the first argument.
 
     } else {
-        res.render('home-guest', {errors: req.flash('errors'), regErrors: req.flash('regErrors')})//HTTP request is stateless, it has no memory that we login just failed.
+        res.render('home-guest'
+        , {errors: req.flash('errors'), regErrors: req.flash('regErrors')}
+       )//HTTP request is stateless, it has no memory that we login just failed.
         //We want to only show the error message to the user once. Once we have shown the user the data, we want to delete it. (course 66th)
     }
 } 

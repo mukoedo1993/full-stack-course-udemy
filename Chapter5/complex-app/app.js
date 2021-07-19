@@ -23,6 +23,12 @@ let sessionOptions = session({
 app.use(sessionOptions)
 app.use(flash()) //add the flash feature to our application: course 66th
 
+app.use(function(req, res, next){
+    res.locals.user = req.session.user
+
+    next()
+})
+
 
 const router = require('./router')
 //require function:1: it executes this file. 2: it returns whatever that file exports.
