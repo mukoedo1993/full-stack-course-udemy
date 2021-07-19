@@ -69,7 +69,8 @@ exports.register = function(req , res){
 
     user.register().then(() => {
         req.session.user = {username: user.data.username,
-        avatar: user.avatar // course 69th
+        avatar: user.avatar, // course 69th
+        _id: user.data._id
     }
         // After we update the session data:
         req.session.save(function() {
