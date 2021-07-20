@@ -19,3 +19,16 @@ exports.create = function(req, res) {
         res.send(errors)
     })
 }
+
+exports.viewSingle = async function(req, res) {
+   try {
+    let post = await Post.findSingleById(req.params.id) // A new instance of blueprint of our model
+    //when we create it, it will return a promise.
+
+
+    res.render('single-post-screen', {post: post}) //passes the post as the variable of post
+   } catch {
+    // 404 
+    res.send("404 template will go here.")
+   }
+}
