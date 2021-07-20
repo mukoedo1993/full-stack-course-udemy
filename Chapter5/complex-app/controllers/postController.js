@@ -29,6 +29,6 @@ exports.viewSingle = async function(req, res) {
     res.render('single-post-screen', {post: post}) //passes the post as the variable of post
    } catch {
     // 404 
-    res.send("404 template will go here.")
-   }
+    res.render('404')
+ }
 }

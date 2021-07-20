@@ -75,10 +75,32 @@ Post.findSingleById = function(id) {
         }
 
         //timing! attention!
-        let post = await postsCollection.findOne({_id: new ObjectID(id)})
+        let posts = await postsCollection.aggregate([
+            {$match: {_id: new ObjectID(id)}}, // perform a match by the requested id
+            {$lookup: {from: "users", localField: "author", foreignField: "_id", as: "authorDocument"}},   //when we are looking for the user collection from the matching documents, the localField, or the 
+            //field in the current post item we want to perform that match on. Local means the curent collection, foreign means other collection we are looking up. And the field we 
+            //want to look on the foreign field is the id field...
+            //as: the as property: mongodb will use this name, authoerDocument, when it adds on a virtual field of property with the matching user document to this post.
 
-        if (post) {
-            resolve(post)
+
+            {$project: {
+                title: 1,
+                body: 1,
+                createdDate: 1,
+                author: {$arrayElemAt: ["$authorDocument", 0]} //set author as first item in the array of authorDocument
+
+            }}
+            
+
+        ]).toArray() //It is great when you need to do multiple operations
+        //we need toArray function to return a promise, because talking to the database is an asynchronous operation.
+
+
+        if (posts.length) {
+            console.log(posts[0])
+
+            
+            resolve(posts[0])
         } else {
             reject()
         }

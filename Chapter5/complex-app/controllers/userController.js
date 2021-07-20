@@ -68,10 +68,8 @@ exports.register = function(req , res){
     let user = new User(req.body)
 
     user.register().then(() => {
-        req.session.user = {username: user.data.username,
-        avatar: user.avatar, // course 69th
-        _id: user.data._id
-    }
+ 
+    req.session.user = {avatar: user.avatar, username: user.data.username, _id: user.data._id} // update in course 76th
         // After we update the session data:
         req.session.save(function() {
             res.redirect('/')
