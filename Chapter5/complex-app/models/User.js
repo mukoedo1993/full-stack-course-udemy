@@ -7,10 +7,20 @@ const validator = require("validator")
 
 const md5 = require('md5')
 
-let User = function(data){ //ctor.
+let User = function(data, getAvatar){ //ctor.
    this.data = data // store the user's input in this object.
    
    this.errors = []
+
+   if (getAvatar == undefined) //which means that you don't give the second argument at all.
+   {
+       getAvatar = false
+   }
+
+   if (getAvatar) //if it is true
+   {
+        this.getAvatar() // this method is going to automatically create a hash based on the current email and generate the gravatar URL
+   }
 }
 
 User.prototype.cleanUp = function() {

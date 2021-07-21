@@ -4,6 +4,8 @@ const ObjectID = require('mongodb').ObjectID //A class representation of the BSO
 
 const postsCollection = require('../db').db().collection("posts") // to access to the database
 
+const User = require('./User')
+
 let Post = function(data, userid) {
     this.data = data // incoming requests body data
     this.errors = []
@@ -94,6 +96,19 @@ Post.findSingleById = function(id) {
 
         ]).toArray() //It is great when you need to do multiple operations
         //we need toArray function to return a promise, because talking to the database is an asynchronous operation.
+
+        // clean up author property in each post object: 
+        posts = posts.map(function(post) {
+
+            //We only want the author object to have two properties, here.
+            post.author = {
+                username: post.author.username,
+                avatar: new User(post.author, true).avatar //The avatar property of a new User object.
+            }
+
+
+            return post
+        })
 
 
         if (posts.length) {
