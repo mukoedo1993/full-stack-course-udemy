@@ -113,4 +113,21 @@ exports.home = function(req, res){
     }
 } 
 
-//res.render('home-guest')
+exports.ifUserExists = function(req, res, next) {
+   User.findByUsername(req.params.username).then(function(userDocument){
+    //If our promises resolves, we could set it up so it will resolves with a value of the user document that it found in the database that matches the requested username
+    req.profileUser = userDocument
+    next()
+   }).catch(function() { //If that findByUserName promise rejects or fails, that means there is no matching users in our database.
+
+    res.render('404')
+   })
+}
+
+//
+exports.profilePostsScreen = function(req, res) {
+ res.render('profile', {
+     profileUsername: req.profileUser.username,
+     profileAvatar: req.profileUser.avatar
+ }) //
+}

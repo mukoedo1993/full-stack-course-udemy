@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs")
 
-const userCollection = require('../db').db().collection("users") // within mongodb; it's the object that represents our database collection
+const usersCollection = require('../db').db().collection("users") // within mongodb; it's the object that represents our database collection
 //require('../db') exports our client, and db() will call the database.
 
 const validator = require("validator")
@@ -81,7 +81,7 @@ User.prototype.validate = function() {
         // Only if username is valid then check to see if it's already taken. 
         // The point is that itr's meaningless to waste energy to trigger database if it is not even a valid username.
         if (this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)) {
-            let usernameExists = await userCollection.findOne({username: this.data.username}) // If mongodb does find a matching document, that's what this promise will resolve to.
+            let usernameExists = await usersCollection.findOne({username: this.data.username}) // If mongodb does find a matching document, that's what this promise will resolve to.
             // await keyword: the Javascript will freeze for the operations until this operation actually resolves this projects.
             console.log("hehe")
     
@@ -92,7 +92,7 @@ User.prototype.validate = function() {
     
         // // Only if email is valid then check to see if it's already taken. 
         if (validator.isEmail(this.data.email)) {
-            let emailExists = await userCollection.findOne({email: this.data.email}) // If mongodb does find a matching document, that's what this promise will resolve to.
+            let emailExists = await usersCollection.findOne({email: this.data.email}) // If mongodb does find a matching document, that's what this promise will resolve to.
             // await keyword: the Javascript will freeze for the operations until this operation actually resolves this projects.
             
     
@@ -118,7 +118,7 @@ User.prototype.login = function(){
 
             // CRUD Operations <- esp., contextually, R here...
             // Luckily, the mongodb is modern. We could not only use findOne method with callback approach, but this function with findOne will also return a promise.
-            userCollection.findOne({username: this.data.username}).then((attemptedUser) =>{
+            usersCollection.findOne({username: this.data.username}).then((attemptedUser) =>{
                 if(attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) { //If it exists, then we have actually found the user, otherwise, the user just doesn't exist...
                     //In this context, we need to make sure that this keyword will not comeback to bite us...
                     // Because there is not an object that directly calls this function, so this will be considered as a global object here...
@@ -156,7 +156,7 @@ User.prototype.register = function(){
     
     
             console.log(this.data)
-            await userCollection.insertOne(this.data) //because we have already cleaned up and validate that data.
+            await usersCollection.insertOne(this.data) //because we have already cleaned up and validate that data.
             //we need to make sure this operation will compelte before resolve is called...
 
             this.getAvatar() // include this after database action. We don't want to save avatar url in the database permanently.
@@ -173,5 +173,40 @@ User.prototype.register = function(){
 User.prototype.getAvatar = function(){
 
     this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`
+}
+
+
+User.findByUsername = function(username) { //Our controller is going to pass in whatever the username at the end of the URL
+
+    return new Promise(function(resolve, reject) {
+        if (typeof(username) != "string") { // If a malicious user wants to pass an object, we don't want it to be passed to mongodb.
+            reject()
+            return // prevent further execution of that function
+        }
+
+        usersCollection.findOne({username: username}) //second username is the argument for the function
+        .then(function(userDoc) {
+            if (userDoc) {
+
+                userDoc = new User(userDoc, true) // take the raw data from the database that has fields like username and email, and we are using them to create a 
+                                                  //new User document.
+
+                userDoc = {
+                    _id: userDoc.data._id,
+                    username: userDoc.data.username,
+                    avatar: userDoc.avatar
+                }
+
+                resolve(userDoc)
+            }
+            else {
+                reject()
+            }
+
+
+        }).catch(function() {
+            reject() //It will be rejected for some sort of technical errors or database connection problems. But for the endplace user seeing, they could only see a 404 for the time being....
+        })
+    })
 }
 module.exports = User
